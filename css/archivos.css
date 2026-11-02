@@ -1,0 +1,78 @@
+/* =========================================================
+   Tipos de archivo: colores, iconos de formato, miniaturas
+   de documentos y elección del formato de salida
+   ========================================================= */
+
+/* Color por tipo de archivo */
+.imagen { --tipo: var(--yellow); --tipo-txt: var(--ink-fixed); }
+.pdf    { --tipo: var(--pink);   --tipo-txt: #fff; }
+.word   { --tipo: var(--blue);   --tipo-txt: #fff; }
+.tabla  { --tipo: var(--mint);   --tipo-txt: var(--ink-fixed); }
+.texto, .markdown, .html { --tipo: var(--ink); --tipo-txt: var(--paper); }
+
+/* Formatos aceptados (encabezado) */
+.formatos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.ft {
+  font: 600 11px var(--mono); letter-spacing: .05em; padding: 3px 8px; border-radius: 6px;
+  background: var(--tipo); color: var(--tipo-txt); border: 1.5px solid var(--borde);
+}
+
+/* ---------- Elegir formato de salida ---------- */
+.salidas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.sal span { flex-direction: column; gap: 5px; padding: 12px 4px 10px; font: 800 15px var(--display); }
+.sal span small { font: 500 10px var(--mono); letter-spacing: .02em; opacity: .7; min-height: 1.2em; }
+.ico {
+  width: 30px; height: 36px; border-radius: 3px 10px 3px 3px; display: grid; place-items: end center; padding-bottom: 4px;
+  font: 800 8.5px var(--mono); font-style: normal; letter-spacing: .02em;
+  background: var(--tipo); color: var(--tipo-txt); border: 2px solid var(--borde);
+}
+.sal input:checked + span {
+  background: var(--card); color: var(--ink); border-color: var(--ink);
+  box-shadow: 3px 3px 0 var(--pink); transform: translate(-1px, -1px);
+}
+.sal input:checked + span small { opacity: 1; }
+
+.aviso {
+  margin: 0; font-size: 12.5px; line-height: 1.45; padding: 9px 12px; border-radius: 12px;
+  background: var(--yellow-soft); color: var(--ink);
+}
+.nota-chica { margin: 0; font-size: 12px; line-height: 1.45; color: var(--muted); }
+
+/* ---------- Tarjetas de documentos ---------- */
+.tipo {
+  display: inline-block; font: 600 10px var(--mono); letter-spacing: .05em; text-transform: uppercase;
+  padding: 1px 6px; border-radius: 5px; margin-right: 6px; vertical-align: 1px;
+  background: var(--tipo); color: var(--tipo-txt);
+}
+
+/* Hoja en miniatura con las primeras líneas del documento */
+.papel {
+  width: 76%; height: 84%; background: #fff; color: #1b1a2e; border-radius: 3px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .2); padding: 12px 11px; overflow: hidden;
+  display: flex; flex-direction: column; gap: 5px; position: relative;
+  border-top: 5px solid var(--tipo);
+}
+.papel .t { font: 800 10.5px/1.2 var(--display); }
+.papel .l { font: 400 7px/1.45 var(--body); color: #4a4860; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.papel::after { /* desvanece el final de la hoja */
+  content: ""; position: absolute; inset: auto 0 0 0; height: 30%; background: linear-gradient(transparent, #fff);
+}
+.mini-tabla { width: 100%; border-collapse: collapse; font: 500 6.5px/1.3 var(--mono); table-layout: fixed; }
+.mini-tabla td { border: 1px solid #dcdae4; padding: 2px 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-tabla tr:first-child td { background: #1b1a2e; color: #fff; font-weight: 700; }
+
+/* La miniatura de un PDF es la primera página */
+.thumb .pagina { background: #fff; }
+.paginas-pila { /* sombra de hojas detrás si hay varias páginas */
+  box-shadow: 4px 4px 0 -1px #fff, 4px 4px 0 0 var(--line), 8px 8px 0 -1px #fff, 8px 8px 0 0 var(--line) !important;
+}
+
+/* Archivo que no entra en el formato elegido */
+.card.fuera { opacity: .5; }
+.card.fuera .thumb::before {
+  content: attr(data-motivo); position: absolute; z-index: 2; inset: auto 10px 10px 10px;
+  font: 600 11px/1.35 var(--mono); text-align: center; padding: 6px 8px; border-radius: 9px;
+  background: var(--ink); color: var(--paper);
+}
+.card.fuera:hover { opacity: .8; }
+.tools .tool.solo { flex: 0 0 auto; width: 100%; }

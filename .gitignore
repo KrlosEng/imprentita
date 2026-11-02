@@ -1,0 +1,8 @@
+# Vercel (conexion con tu cuenta: no subir)
+.vercel
+.env*
+
+# Sistema
+Thumbs.db
+.DS_Store
+node_modules

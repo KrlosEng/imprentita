@@ -1,0 +1,81 @@
+/* =========================================================
+   Layout: encabezado, pasos y columnas principales
+   ========================================================= */
+
+.wrap { max-width: 1200px; margin: 0 auto; }
+
+/* ---------- Barra superior ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding-block: 18px;
+  border-bottom: 2px solid var(--line);
+}
+.mark { display: flex; align-items: center; gap: 10px; font: 800 18px var(--display); letter-spacing: -.01em; }
+.mark .sello {
+  width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center;
+  background: var(--yellow); color: var(--ink-fixed); border: 2.5px solid var(--ink-fixed);
+  box-shadow: 3px 3px 0 var(--pink); transform: rotate(-6deg);
+}
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase;
+  padding: 6px 10px; border: 2px solid var(--line); border-radius: 999px; background: var(--card); color: var(--muted);
+}
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
+
+/* ---------- Encabezado ---------- */
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end;
+  padding-block: 36px 30px;
+}
+@media (max-width: 760px) { .hero { grid-template-columns: minmax(0, 1fr); } }
+
+.logo {
+  margin: 0;
+  font: 800 clamp(46px, 8.5vw, 92px)/.88 var(--display);
+  letter-spacing: -.04em;
+}
+.logo .capas { position: relative; display: inline-block; }
+.logo .reg { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; }
+.logo .reg.p { color: var(--pink); transform: translate(5px, 3px); }
+.logo .reg.b { color: var(--blue); transform: translate(-3px, -2px); opacity: .9; }
+.logo .tinta { position: relative; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .logo .reg { mix-blend-mode: screen; } }
+:root[data-theme="dark"] .logo .reg { mix-blend-mode: screen; }
+
+.tagline { margin: 14px 0 0; font-size: 17px; color: var(--muted); max-width: 50ch; }
+.tagline b { color: var(--ink); font-weight: 700; }
+
+/* Pasos (el orden es real: agregar → ordenar → descargar) */
+.pasos { list-style: none; margin: 0; padding: 0; display: flex; gap: 6px; flex-wrap: wrap; }
+.paso {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 14px 8px 8px; border-radius: 999px; border: 2px solid var(--line); background: var(--card);
+  font-weight: 600; font-size: 14px; color: var(--muted); transition: all .25s;
+}
+.paso .n {
+  width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+  font: 500 12px var(--mono); background: var(--paper-2); color: var(--muted); transition: all .25s;
+}
+.paso.activo { border-color: var(--ink); color: var(--ink); box-shadow: 3px 3px 0 var(--shadow); }
+.paso.activo .n { background: var(--pink); color: var(--on-accent); }
+.paso.hecho { color: var(--ink); }
+.paso.hecho .n { background: var(--mint); color: var(--ink-fixed); }
+
+/* ---------- Columnas ---------- */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 30px; align-items: start; }
+@media (max-width: 940px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.mesa-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 30px 0 16px; }
+.mesa-head h2 { margin: 0; font: 800 24px var(--display); letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+.mesa-head .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+.count {
+  font: 500 13px var(--mono); background: var(--ink); color: var(--paper);
+  border-radius: 999px; padding: 2px 10px; font-variant-numeric: tabular-nums;
+}
+
+footer {
+  margin-top: 48px; padding-top: 18px; border-top: 2px solid var(--line);
+  font: 500 12px var(--mono); color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+}

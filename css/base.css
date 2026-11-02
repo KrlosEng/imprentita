@@ -1,0 +1,86 @@
+/* =========================================================
+   Base: colores, tipografía y reglas generales
+   Estilo: imprenta risográfica (rosa, azul y amarillo con
+   sombras planas y tramas de puntos)
+   ========================================================= */
+
+:root {
+  --paper: #f6f5f1;
+  --paper-2: #eeece6;
+  --card: #ffffff;
+  --ink: #1b1a2e;
+  --ink-fixed: #1b1a2e;      /* texto sobre amarillo: no cambia con el tema */
+  --borde: #1b1a2e;          /* contorno grueso de tarjetas y botones */
+  --muted: #696680;
+  --line: #dcdae4;
+  --pink: #ff3d9a;
+  --blue: #1f6bff;
+  --yellow: #ffd60a;
+  --mint: #19c9a0;
+  --pink-soft: #ffe1ef;
+  --blue-soft: #e3ecff;
+  --yellow-soft: #fff6c7;
+  --dot: rgba(27, 26, 46, .07);
+  --shadow: #1b1a2e;
+  --on-accent: #ffffff;
+  --ia: linear-gradient(115deg, var(--pink), var(--blue) 55%, var(--mint));
+
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
+    --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
+    --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(255, 255, 255, .05); --shadow: #000;
+    --borde: #4a4664;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
+  --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
+  --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(255, 255, 255, .05); --shadow: #000;
+  --borde: #4a4664;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+
+body {
+  font: 15px/1.55 var(--body);
+  color: var(--ink);
+  background-color: var(--paper);
+  background-image: radial-gradient(var(--dot) 1.2px, transparent 1.4px);
+  background-size: 14px 14px;
+  min-height: 100vh;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 40px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+h1, h2, h3 { text-wrap: balance; }
+
+.label {
+  font: 500 11px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
