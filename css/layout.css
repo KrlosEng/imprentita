@@ -52,11 +52,11 @@
 .paso {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 14px 8px 8px; border-radius: 999px; border: 2px solid var(--line); background: var(--card);
-  font-weight: 600; font-size: 14px; color: var(--muted); transition: all .25s;
+  font-weight: 600; font-size: 14px; color: var(--muted); transition: color var(--dur), border-color var(--dur), box-shadow var(--dur) var(--ease-out);
 }
 .paso .n {
   width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
-  font: 500 12px var(--mono); background: var(--paper-2); color: var(--muted); transition: all .25s;
+  font: 500 12px var(--mono); background: var(--paper-2); color: var(--muted); transition: background-color var(--dur), color var(--dur);
 }
 .paso.activo { border-color: var(--ink); color: var(--ink); box-shadow: 3px 3px 0 var(--shadow); }
 .paso.activo .n { background: var(--pink); color: var(--on-accent); }

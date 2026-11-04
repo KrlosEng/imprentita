@@ -28,7 +28,7 @@
       return {
         badge: '',
         clase: 'procesando',
-        capa: `<div class="ia-capa"><span class="ia-texto">${texto}</span><div class="ia-barra"><div style="width:${Math.round((ia.progreso || 0) * 100)}%"></div></div></div>`,
+        capa: `<div class="ia-capa"><span class="ia-texto">${texto}</span><div class="ia-barra"><div style="transform:scaleX(${(ia.progreso || 0).toFixed(3)})"></div></div></div>`,
       };
     }
     return { badge: '', capa: '', clase: '' };
@@ -40,10 +40,10 @@
       const listo = usarIA && it.ia && it.ia.estado === 'listo';
       const w = listo ? it.ia.w : it.w, h = listo ? it.ia.h : it.h;
       const scale = it.rot % 180 ? Math.min(w, h) / Math.max(w, h) : 1;
-      return `<img src="${listo ? it.ia.src : it.src}" alt="" style="transform: rotate(${it.rot}deg) scale(${scale})">`;
+      return `<img src="${listo ? it.ia.src : it.thumb}" alt="" style="transform: ${giroCss(it, scale)}">`;
     }
     if (it.kind === 'pdf') {
-      return `<img class="pagina ${it.paginas > 1 ? 'paginas-pila' : ''}" src="${it.thumb}" alt="" style="transform: rotate(${it.rot}deg) scale(${it.rot % 180 ? 0.75 : 1})">`;
+      return `<img class="pagina ${it.paginas > 1 ? 'paginas-pila' : ''}" src="${it.thumb}" alt="" style="transform: ${giroCss(it, it.rot % 180 ? 0.75 : 1)}">`;
     }
     const r = it.resumen;
     if (r.tabla) {
@@ -61,8 +61,17 @@
     return listo ? `${dims(it.w, it.h)} → <b>${dims(it.ia.w, it.ia.h)}</b>` : `${dims(it.w, it.h)} px`;
   }
 
+  // Ángulo acumulado: así el giro siempre va en la dirección que se pidió (270° → 360°, no de vuelta a 0°)
+  const giroCss = (it, scale) => `rotate(${it.giro ?? it.rot}deg) scale(${scale})`;
+
+  let cuentaAnterior = 0;
+  // Redibuja las tarjetas; las que ya estaban se deslizan a su nuevo lugar
   function render() {
     if (dragId !== null) return;
+    App.mov.flip(grid, dibujar);
+  }
+
+  function dibujar() {
     grid.innerHTML = '';
     const o = App.opts();
     state.items.forEach((it, i) => {
@@ -97,31 +106,82 @@
       vistas.add(it.id);
     });
     $('#empty').hidden = state.items.length > 0;
+    $('#drop').classList.toggle('vacia', !state.items.length);
     $('#count').textContent = state.items.length;
+    if (state.items.length !== cuentaAnterior) App.mov.realzar($('#count'), 1.3);
+    cuentaAnterior = state.items.length;
     App.emit('resumen');
   }
 
   // Solo mueve la barra de progreso, sin redibujar todo
   App.on('ia-progreso', (it) => {
     const bar = grid.querySelector(`.card[data-id="${it.id}"] .ia-barra div`);
-    if (bar) bar.style.width = Math.round(it.ia.progreso * 100) + '%';
+    if (bar) bar.style.transform = `scaleX(${it.ia.progreso.toFixed(3)})`;
   });
   App.on('ia', render);
   App.on('items', render);
 
-  // Girar y quitar
-  grid.addEventListener('click', (e) => {
+  // Girar (sin redibujar, para que la miniatura gire suave) y quitar
+  grid.addEventListener('click', async (e) => {
     const btn = e.target.closest('.tool');
     if (!btn) return;
-    const id = Number(btn.closest('.card').dataset.id);
-    const it = state.items.find((x) => x.id === id);
-    if (btn.dataset.act === 'left') it.rot = (it.rot + 270) % 360;
-    if (btn.dataset.act === 'right') it.rot = (it.rot + 90) % 360;
+    const card = btn.closest('.card');
+    const it = state.items.find((x) => x.id === Number(card.dataset.id));
+    if (!it) return;
+
+    if (btn.dataset.act === 'left' || btn.dataset.act === 'right') {
+      const paso = btn.dataset.act === 'left' ? -90 : 90;
+      it.giro = (it.giro ?? it.rot) + paso;
+      it.rot = ((it.rot + paso) % 360 + 360) % 360;
+      const img = card.querySelector('.thumb img');
+      if (img) {
+        const o = App.opts();
+        let scale = 1;
+        if (it.rot % 180) {
+          if (it.kind === 'pdf') scale = 0.75;
+          else {
+            const listo = o.ia && it.ia && it.ia.estado === 'listo';
+            const w = listo ? it.ia.w : it.w, h = listo ? it.ia.h : it.h;
+            scale = Math.min(w, h) / Math.max(w, h);
+          }
+        }
+        img.style.transform = giroCss(it, scale);
+        card.querySelector('.dims').innerHTML = `<span class="tipo ${it.kind}">${App.TIPOS[it.kind].nombre}</span>${info(it, o.ia)}`;
+      }
+      return;
+    }
+
     if (btn.dataset.act === 'del') {
+      const indice = state.items.indexOf(it);
+      const teniaFoco = card.contains(document.activeElement);
+      await App.mov.salir(card);
       if (it.src) URL.revokeObjectURL(it.src);
       state.items = state.items.filter((x) => x !== it);
+      render();
+      // quien usa el teclado no pierde su lugar: el foco pasa a la tarjeta siguiente
+      if (teniaFoco) {
+        const sig = grid.querySelectorAll('.card .tool.del')[Math.min(indice, state.items.length - 1)];
+        (sig || $('#sample')).focus();
+      }
     }
+  });
+
+  // Reordenar con teclado: Alt + flecha sobre cualquier botón de la tarjeta
+  grid.addEventListener('keydown', (e) => {
+    if (!e.altKey || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
+    const card = e.target.closest('.card');
+    if (!card) return;
+    e.preventDefault();
+    const from = state.items.findIndex((x) => x.id === Number(card.dataset.id));
+    const to = from + (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1);
+    if (to < 0 || to >= state.items.length) return;
+    const act = e.target.dataset.act;
+    const [moved] = state.items.splice(from, 1);
+    state.items.splice(to, 0, moved);
     render();
+    const nueva = grid.querySelector(`.card[data-id="${moved.id}"] [data-act="${act}"]`);
+    if (nueva) nueva.focus();
+    App.toast(`${moved.name} ahora es el número ${to + 1}`, 1800);
   });
 
   // Reordenar arrastrando

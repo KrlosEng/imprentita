@@ -16,13 +16,29 @@
 
   const numero = (n) => n.toLocaleString('es');
 
+  // Miniatura reducida: una foto de 12 MP mostrada entera en la tarjeta gasta
+  // mucha memoria y hace lento el desplazamiento en el celular
+  const LADO_MINI = 480;
+  function miniatura(img, w, h) {
+    const k = LADO_MINI / Math.max(w, h);
+    if (k >= 1) return img.src;
+    const c = document.createElement('canvas');
+    c.width = Math.round(w * k);
+    c.height = Math.round(h * k);
+    const g = c.getContext('2d');
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(img, 0, 0, c.width, c.height);
+    // WEBP conserva la transparencia de los PNG y pesa poco
+    return c.toDataURL('image/webp', 0.85);
+  }
+
   // ---------- Lectores por tipo ----------
   async function leerImagen(f, it) {
     it.src = URL.createObjectURL(f);
     it.img = await App.loadImage(it.src);
     it.w = it.img.naturalWidth || 800;
     it.h = it.img.naturalHeight || 800;
-    it.thumb = it.src;
+    it.thumb = miniatura(it.img, it.w, it.h);
   }
 
   async function leerPdf(f, it) {

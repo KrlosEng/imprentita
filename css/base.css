@@ -22,12 +22,20 @@
   --yellow-soft: #fff6c7;
   --dot: rgba(27, 26, 46, .07);
   --shadow: #1b1a2e;
-  --on-accent: #ffffff;
+  --on-accent: #1b1a2e;      /* tinta oscura sobre rosa: contraste AA en ambos temas */
+  --on-blue: #ffffff;        /* sobre el azul claro el blanco cumple; en oscuro se cambia */
   --ia: linear-gradient(115deg, var(--pink), var(--blue) 55%, var(--mint));
 
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
   --body: "DM Sans", "Segoe UI", system-ui, sans-serif;
   --mono: "JetBrains Mono", Consolas, monospace;
+
+  /* Movimiento: desaceleración natural, sin rebotes */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);       /* quart: estados y hover */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);  /* expo: entradas decididas */
+  --dur-rapida: 140ms;   /* presionar, marcar */
+  --dur: 240ms;          /* cambios de estado */
+  --dur-entrada: 640ms;  /* carga de página */
 
   --r-sm: 10px;
   --r-md: 14px;
@@ -40,7 +48,7 @@
     --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
     --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
     --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(255, 255, 255, .05); --shadow: #000;
-    --borde: #4a4664;
+    --borde: #4a4664; --on-blue: #1b1a2e;
     color-scheme: dark;
   }
 }
@@ -48,7 +56,7 @@
   --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
   --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
   --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(255, 255, 255, .05); --shadow: #000;
-  --borde: #4a4664;
+  --borde: #4a4664; --on-blue: #1b1a2e;
   color-scheme: dark;
 }
 

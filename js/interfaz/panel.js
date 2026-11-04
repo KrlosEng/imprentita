@@ -5,9 +5,23 @@
 (() => {
   const { $, state } = App;
   const EXT_IMG = { jpg: '.jpg', png: '.png', webp: '.webp' };
+  let iniciado = false; // no animar lo que ya está en pantalla al abrir la página
+  let pasoAnterior = 1;
+
+  // Muestra u oculta un elemento; si aparece, entra deslizándose
+  function mostrar(el, ver) {
+    const estabaOculto = el.hidden;
+    el.hidden = !ver;
+    if (iniciado && estabaOculto && ver) App.mov.aparecer(el);
+  }
 
   function actualizarPasos() {
     const actual = state.descargado ? 3 : state.items.length ? 2 : 1;
+    if (iniciado && actual !== pasoAnterior) {
+      // el paso nuevo se marca como un sello
+      requestAnimationFrame(() => App.mov.realzar(document.querySelector(`.paso[data-paso="${actual}"] .n`), 1.35));
+    }
+    pasoAnterior = actual;
     document.querySelectorAll('.paso').forEach((li) => {
       const n = Number(li.dataset.paso);
       li.classList.toggle('activo', n === actual);
@@ -21,7 +35,7 @@
     document.querySelectorAll('.panel [data-para]').forEach((el) => {
       let ver = el.dataset.para.split(' ').includes(o.fmt);
       if (el.dataset.si === 'pdf') ver = ver && hayPdf;
-      el.hidden = !ver;
+      mostrar(el, ver);
     });
   }
 
@@ -34,7 +48,7 @@
     });
     const fuera = state.items.filter((it) => !App.compatible(it, o.fmt)).length;
     const aviso = $('#avisoCompat');
-    aviso.hidden = !fuera;
+    mostrar(aviso, Boolean(fuera));
     if (fuera) {
       aviso.textContent = o.fmt === 'excel'
         ? `${fuera} ${fuera === 1 ? 'archivo no tiene' : 'archivos no tienen'} tablas y se ${fuera === 1 ? 'omite' : 'omiten'}. Excel solo toma tablas (CSV, Excel o tablas dentro de Word, Markdown o HTML).`
@@ -44,7 +58,7 @@
 
   function actualizarNotaIA(o) {
     const imagenes = state.items.filter((it) => it.kind === 'imagen').length;
-    $('#iaNota').hidden = !o.ia;
+    mostrar($('#iaNota'), o.ia);
     if (!o.ia) return;
     const { total, listas, faltan } = App.ia.contar();
     const hd = state.items.filter((it) => it.kind === 'imagen' && it.ia && it.ia.estado === 'hd').length;
@@ -74,7 +88,10 @@
     $('#ext').textContent = extension(o);
     if (!state.convirtiendo) {
       go.textContent = `Convertir a ${nombre}`;
+      const estabaApagado = go.disabled;
       go.disabled = n === 0;
+      // la primera vez que se puede convertir, el botón se asoma para que lo veas
+      if (iniciado && estabaApagado && !go.disabled) App.mov.invitar(go);
     }
     go.className = 'btn go ' + (o.fmt === 'docx' ? 'doc' : 'pdf');
     $('#sumPages').textContent = `${n} ${n === 1 ? 'archivo' : 'archivos'}`;
@@ -90,7 +107,9 @@
   // Al cambiar cualquier opción
   document.querySelectorAll('.panel input, .panel select').forEach((el) => el.addEventListener('change', () => {
     state.descargado = false;
-    if (el.name === 'calidad' || el.name === 'fmt') {
+    if (el.name === 'fmt' || el.name === 'calidad') {
+      // el icono del formato elegido se estampa
+      App.mov.realzar(el.closest('.opt').querySelector('.ico, span'), 1.15);
       if (App.opts().ia) App.ia.mejorarTodas();
       App.render(); // marcas de IA y archivos que no entran en el formato
     }
@@ -100,4 +119,6 @@
   App.on('resumen', actualizarResumen);
   App.on('ia', actualizarResumen);
   App.actualizarResumen = actualizarResumen;
+  // A partir de aquí los cambios ya los provoca la persona: se animan
+  setTimeout(() => { iniciado = true; }, 0);
 })();

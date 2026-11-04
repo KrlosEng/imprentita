@@ -21,17 +21,18 @@
     }
     if (App.opts().ia) App.ia.mejorarTodas();
 
-    if (errores.red.length) App.toast('No se pudo descargar el lector de ese formato. La primera vez se necesita internet.', 6000);
+    if (errores.red.length) App.toast('No se pudo descargar el lector de ese formato. La primera vez se necesita internet.', 6000, 'error');
     else if (errores.tipo.length) {
       const doc = errores.tipo.some((n) => /\.(doc|ppt|pptx)$/i.test(n));
       App.toast(doc
         ? 'Los archivos .doc y .ppt no se pueden abrir. Guárdalos como .docx o PDF y vuelve a intentarlo.'
-        : `No se pudo abrir: ${errores.tipo.join(', ')}. Usa imágenes, PDF, Word (.docx), Excel, CSV o texto.`, 6000);
-    } else if (errores.lectura.length) App.toast(`No se pudo leer ${errores.lectura.join(', ')}. Puede estar dañado o protegido con contraseña.`, 6000);
-    else if (added) App.toast(`${added} ${added === 1 ? 'archivo agregado' : 'archivos agregados'}`);
+        : `No se pudo abrir: ${errores.tipo.join(', ')}. Usa imágenes, PDF, Word (.docx), Excel, CSV o texto.`, 6000, 'error');
+    } else if (errores.lectura.length) App.toast(`No se pudo leer ${errores.lectura.join(', ')}. Puede estar dañado o protegido con contraseña.`, 6000, 'error');
+    else if (added) App.toast(`${added} ${added === 1 ? 'archivo agregado' : 'archivos agregados'}`, 3200, 'ok');
   }
 
-  // Explorador de archivos
+  // Explorador de archivos (el botón también funciona con teclado)
+  $('#elegir').addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
   fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
 
   // Arrastrar y soltar
@@ -134,7 +135,7 @@ Abril,Plumas,1020,3060
       await addFiles([await imagenEjemplo(), await pdfEjemplo(), markdownEjemplo(), csvEjemplo()]);
     } catch (err) {
       console.error(err);
-      App.toast('No se pudieron crear los ejemplos. Revisa tu conexión a internet.', 5000);
+      App.toast('No se pudieron crear los ejemplos. Revisa tu conexión a internet.', 5000, 'error');
     }
     btn.disabled = false; btn.textContent = 'Probar con ejemplos';
   });

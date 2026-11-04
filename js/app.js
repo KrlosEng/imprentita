@@ -6,7 +6,11 @@
 
   function setProgreso(p, texto) {
     if (texto) $('#progresoTexto').textContent = texto;
-    if (p !== null && p !== undefined) $('#bar').style.width = Math.round(p * 100) + '%';
+    if (p !== null && p !== undefined) {
+      const v = Math.min(1, Math.max(0, p));
+      $('#bar').style.transform = `scaleX(${v.toFixed(3)})`;
+      $('#barra').setAttribute('aria-valuenow', Math.round(v * 100));
+    }
   }
 
   // Espera a que la IA termine, mostrando el avance
@@ -36,6 +40,7 @@
     const go = $('#go');
     state.convirtiendo = true;
     go.disabled = true;
+    go.classList.add('convirtiendo');
     go.textContent = 'Convirtiendo…';
     $('#progreso').hidden = false;
     setProgreso(0, 'Preparando…');
@@ -50,14 +55,16 @@
       const r = await App.paquete.entregar(archivos, o.base);
       state.descargado = true;
       const cuantos = r.cuantos ? ` con ${r.cuantos} archivos` : '';
-      App.toast(`Listo: ${r.nombre}${cuantos} (${mb(r.tamano)})${omitidos ? ` · se ${omitidos === 1 ? 'omitió 1 archivo' : `omitieron ${omitidos} archivos`}` : ''}`, 5000);
+      App.toast(`Listo: ${r.nombre}${cuantos} (${mb(r.tamano)})${omitidos ? ` · se ${omitidos === 1 ? 'omitió 1 archivo' : `omitieron ${omitidos} archivos`}` : ''}`, 5000, 'ok');
+      App.mov.celebrar(go);
     } catch (err) {
       console.error(err);
       App.toast(/descargar/.test(err.message)
         ? 'No se pudo descargar una herramienta necesaria. La primera vez se necesita internet.'
-        : 'Algo falló al convertir. Prueba con menos archivos o con calidad "Alta".', 6000);
+        : 'Algo falló al convertir. Prueba con menos archivos o con calidad "Alta".', 6000, 'error');
     } finally {
       state.convirtiendo = false;
+      go.classList.remove('convirtiendo');
       setTimeout(() => { $('#progreso').hidden = true; }, 700);
       App.actualizarResumen();
     }
