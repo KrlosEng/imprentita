@@ -5,29 +5,31 @@
    ========================================================= */
 
 :root {
-  --paper: #f6f5f1;
-  --paper-2: #eeece6;
-  --card: #ffffff;
-  --ink: #1b1a2e;
-  --ink-fixed: #1b1a2e;      /* texto sobre amarillo: no cambia con el tema */
-  --borde: #1b1a2e;          /* contorno grueso de tarjetas y botones */
-  --muted: #696680;
-  --line: #dcdae4;
-  --pink: #ff3d9a;
-  --blue: #1f6bff;
-  --yellow: #ffd60a;
-  --mint: #19c9a0;
-  --pink-soft: #ffe1ef;
-  --blue-soft: #e3ecff;
-  --yellow-soft: #fff6c7;
-  --dot: rgba(27, 26, 46, .07);
-  --shadow: #1b1a2e;
-  --on-accent: #1b1a2e;      /* tinta oscura sobre rosa: contraste AA en ambos temas */
-  --on-blue: #ffffff;        /* sobre el azul claro el blanco cumple; en oscuro se cambia */
-  --ia: linear-gradient(115deg, var(--pink), var(--blue) 55%, var(--mint));
+  /* Paleta en OKLCH. Neutros teñidos hacia la tinta violeta-negra de la marca (h 290)
+     y el papel hacia el rosa (h 340); nada de blanco ni negro puros */
+  --paper: oklch(0.972 0.006 340);
+  --paper-2: oklch(0.945 0.008 340);
+  --card: oklch(0.995 0.003 340);
+  --hoja: oklch(0.995 0.004 95);          /* papel de las miniaturas de documentos */
+  --ink: oklch(0.23 0.035 290);
+  --ink-fixed: oklch(0.23 0.035 290);     /* texto sobre amarillo: no cambia con el tema */
+  --borde: oklch(0.23 0.035 290);         /* contorno grueso de tarjetas y botones */
+  --muted: oklch(0.5 0.03 290);
+  --line: oklch(0.89 0.012 300);
+  --pink: oklch(0.66 0.23 355);
+  --blue: oklch(0.56 0.22 262);
+  --yellow: oklch(0.88 0.18 95);
+  --mint: oklch(0.75 0.15 172);
+  --pink-soft: oklch(0.94 0.04 355);
+  --blue-soft: oklch(0.94 0.035 262);
+  --yellow-soft: oklch(0.97 0.06 98);
+  --dot: oklch(0.23 0.035 290 / .07);
+  --shadow: oklch(0.23 0.035 290);
+  --on-accent: oklch(0.23 0.035 290);     /* tinta oscura sobre rosa: contraste AA en ambos temas */
+  --on-blue: oklch(0.99 0.004 262);       /* sobre el azul claro el blanco cumple; en oscuro se cambia */
 
   --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-  --body: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --body: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;  /* grotesca de periódico: hecha para leerse impresa */
   --mono: "JetBrains Mono", Consolas, monospace;
 
   /* Movimiento: desaceleración natural, sin rebotes */
@@ -37,6 +39,15 @@
   --dur: 240ms;          /* cambios de estado */
   --dur-entrada: 640ms;  /* carga de página */
 
+  /* Espaciado: escala de 4pt */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+
   --r-sm: 10px;
   --r-md: 14px;
   --r-lg: 22px;
@@ -45,18 +56,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
-    --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
-    --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(255, 255, 255, .05); --shadow: #000;
-    --borde: #4a4664; --on-blue: #1b1a2e;
+    --paper: oklch(0.18 0.02 290); --paper-2: oklch(0.21 0.022 290); --card: oklch(0.235 0.028 290);
+    --ink: oklch(0.955 0.012 290); --muted: oklch(0.72 0.03 290); --line: oklch(0.33 0.03 290);
+    --pink: oklch(0.72 0.2 355); --blue: oklch(0.67 0.17 265); --mint: oklch(0.82 0.15 172);
+    --pink-soft: oklch(0.28 0.06 355); --blue-soft: oklch(0.27 0.06 265); --yellow-soft: oklch(0.3 0.05 98);
+    --dot: oklch(0.955 0.012 290 / .05); --shadow: oklch(0.1 0.02 290);
+    --borde: oklch(0.4 0.04 290); --on-blue: oklch(0.23 0.035 290);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
-  --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
-  --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(255, 255, 255, .05); --shadow: #000;
-  --borde: #4a4664; --on-blue: #1b1a2e;
+  --paper: oklch(0.18 0.02 290); --paper-2: oklch(0.21 0.022 290); --card: oklch(0.235 0.028 290);
+  --ink: oklch(0.955 0.012 290); --muted: oklch(0.72 0.03 290); --line: oklch(0.33 0.03 290);
+  --pink: oklch(0.72 0.2 355); --blue: oklch(0.67 0.17 265); --mint: oklch(0.82 0.15 172);
+  --pink-soft: oklch(0.28 0.06 355); --blue-soft: oklch(0.27 0.06 265); --yellow-soft: oklch(0.3 0.05 98);
+  --dot: oklch(0.955 0.012 290 / .05); --shadow: oklch(0.1 0.02 290);
+  --borde: oklch(0.4 0.04 290); --on-blue: oklch(0.23 0.035 290);
   color-scheme: dark;
 }
 
@@ -91,4 +106,31 @@ h1, h2, h3 { text-wrap: balance; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Respaldo para navegadores sin OKLCH (Chrome < 111, Safari < 15.4, Firefox < 113):
+   la misma paleta en hex, para que la app nunca se quede sin colores */
+@supports not (color: oklch(0 0 0)) {
+  :root {
+    --paper: #f8f4f6; --paper-2: #f0ebee; --card: #fefcfd; --hoja: #fffefa;
+    --ink: #1b1a2e; --ink-fixed: #1b1a2e; --borde: #1b1a2e; --shadow: #1b1a2e; --on-accent: #1b1a2e;
+    --muted: #625f78; --line: #dcdae4;
+    --pink: #ff3d9a; --blue: #1f6bff; --yellow: #ffd60a; --mint: #19c9a0;
+    --pink-soft: #ffe1ef; --blue-soft: #e3ecff; --yellow-soft: #fff6c7;
+    --dot: rgba(27, 26, 46, .07); --on-blue: #fcfdff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
+      --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
+      --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(242, 240, 250, .05);
+      --shadow: #07060d; --borde: #4a4664; --on-blue: #1b1a2e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #13121c; --paper-2: #1a1926; --card: #1e1c2c; --ink: #f2f0fa; --muted: #a29fb8; --line: #34314a;
+    --pink: #ff5aaa; --blue: #5b8fff; --mint: #2fe0b6;
+    --pink-soft: #3a1d30; --blue-soft: #1c2647; --yellow-soft: #3a3418; --dot: rgba(242, 240, 250, .05);
+    --shadow: #07060d; --borde: #4a4664; --on-blue: #1b1a2e;
+  }
 }

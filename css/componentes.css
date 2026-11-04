@@ -58,7 +58,7 @@
 }
 
 /* ---------- Tarjetas de imagen ---------- */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 20px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: var(--space-xl); }
 .empty {
   border: 2px dashed var(--line); border-radius: 18px; padding: 28px; text-align: center; color: var(--muted);
   background: var(--card);
@@ -85,7 +85,7 @@
 }
 .thumb img {
   max-width: 86%; max-height: 86%; object-fit: contain; transition: transform 320ms var(--ease-out), filter 400ms var(--ease-out);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .2); background: #fff;
+  box-shadow: 3px 3px 0 color-mix(in oklch, var(--ink-fixed) 22%, transparent); background: var(--hoja);
 }
 .num {
   position: absolute; top: 8px; left: 8px; font: 500 12px var(--mono);
@@ -105,10 +105,10 @@
   padding: 7px 9px; font: 600 11px var(--mono); color: var(--ink);
 }
 .ia-barra { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.ia-barra div { height: 100%; width: 100%; background: var(--ia); transform: scaleX(0); transform-origin: left; transition: transform var(--dur) var(--ease-out); }
+.ia-barra div { height: 100%; width: 100%; background: repeating-linear-gradient(45deg, var(--blue) 0 6px, var(--pink) 6px 12px); transform: scaleX(0); transform-origin: left; transition: transform var(--dur) var(--ease-out); }
 .card.procesando .thumb::after { /* brillo que recorre la imagen */
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .45) 50%, transparent 70%);
+  background: linear-gradient(100deg, transparent 30%, oklch(0.99 0.004 340 / .45) 50%, transparent 70%);
   background-size: 250% 100%; animation: brillo 1.4s linear infinite; pointer-events: none;
 }
 @keyframes brillo { from { background-position: 120% 0; } to { background-position: -120% 0; } }
@@ -138,13 +138,13 @@
 .panel-head {
   padding: 18px 22px; border-bottom: 2.5px solid var(--borde);
   background: var(--yellow); color: var(--ink-fixed);
-  background-image: radial-gradient(rgba(27, 26, 46, .12) 1.3px, transparent 1.6px); background-size: 10px 10px;
+  background-image: radial-gradient(oklch(0.23 0.035 290 / .12) 1.3px, transparent 1.6px); background-size: 10px 10px;
 }
 .panel-head h2 { margin: 0; font: 800 24px/1.1 var(--display); letter-spacing: -.01em; }
 .panel-head p { margin: 4px 0 0; font-size: 13px; opacity: .8; }
-.panel-body { padding: 20px 22px 22px; display: grid; gap: 18px; overflow-y: auto; min-height: 0; }
+.panel-body { padding: var(--space-xl); display: grid; gap: var(--space-xl); overflow-y: auto; min-height: 0; }
 
-.field { display: grid; gap: 8px; }
+.field { display: grid; gap: var(--space-sm); }
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .seg.tres { grid-template-columns: repeat(3, 1fr); }
 .opt { position: relative; }
@@ -161,10 +161,10 @@
 
 /* Calidad: tres niveles, el de IA destacado */
 .calidad .opt span { flex-direction: column; gap: 2px; padding: 10px 4px; line-height: 1.2; }
-.calidad .opt span small { font: 500 10px var(--mono); opacity: .7; letter-spacing: .02em; }
-.calidad .opt.ia span { position: relative; border-color: transparent; background: linear-gradient(var(--card), var(--card)) padding-box, var(--ia) border-box; }
+.calidad .opt span small { font: 500 11px var(--mono); opacity: .75; letter-spacing: 0; }
+.calidad .opt.ia span { position: relative; border-color: var(--blue); box-shadow: 2px 2px 0 var(--pink); }  /* dos tintas fuera de registro */
 .calidad .opt.ia span b {
-  color: var(--pink); font-weight: 800;
+  color: var(--pink); font-weight: 700;
 }
 .calidad .opt.ia input:checked + span {
   background: var(--blue); border-color: var(--borde); color: var(--on-blue); box-shadow: 3px 3px 0 var(--pink);
