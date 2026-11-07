@@ -13,7 +13,7 @@
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
 <link rel="dns-prefetch" href="https://cdn.sheetjs.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
 
 <!-- Estilos -->
 <link rel="stylesheet" href="css/base.css">
@@ -24,89 +24,88 @@
 <!-- Las librerías (PDF, Word, Excel, IA…) se cargan solas cuando hacen falta: ver js/librerias.js -->
 </head>
 <body>
-<div class="wrap">
+<div class="marco">
 
-  <div class="topbar">
-    <div class="mark">
+  <header class="barra">
+    <a class="marca" href="./" aria-label="Imprentita, inicio">
       <span class="sello" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>
       </span>
-    </div>
-    <div class="badges">
-      <span class="chip"><span class="dot"></span>Tus archivos no salen de tu computadora</span>
-    </div>
-  </div>
+      <span class="logotipo"><span class="reg" aria-hidden="true">Imprentita</span><span class="tinta">Imprentita</span></span>
+    </a>
+    <p class="privacidad"><span class="dot" aria-hidden="true"></span>Tus archivos no salen de tu computadora</p>
+  </header>
 
-  <header class="hero">
-    <div>
-      <h1 class="logo" aria-label="Imprentita">
-        <span class="capas"><span class="reg p" aria-hidden="true">Imprentita</span><span class="reg b" aria-hidden="true">Imprentita</span><span class="tinta">Imprentita</span></span>
-      </h1>
-      <p class="tagline">Convierte <b>imágenes, PDF, Word, Excel y texto</b> al formato que necesites. Únelos en un solo archivo, ordénalos y, si quieres, deja que la <b>IA</b> les dé más nitidez a tus fotos.</p>
-      <div class="formatos" aria-label="Formatos que acepta">
-        <span class="ft imagen">JPG</span><span class="ft imagen">PNG</span><span class="ft imagen">WEBP</span>
-        <span class="ft pdf">PDF</span><span class="ft word">DOCX</span>
-        <span class="ft tabla">XLSX</span><span class="ft tabla">CSV</span>
-        <span class="ft texto">TXT</span><span class="ft texto">MD</span><span class="ft texto">HTML</span>
+  <div class="hoja">
+    <div class="titulo">
+      <div>
+        <h1>Convertir archivos</h1>
+        <p class="estado" id="estado" aria-live="polite">Agrega imágenes, PDF, Word, Excel o texto y elige en qué convertirlos.</p>
+      </div>
+      <div class="titulo-acciones">
+        <button class="btn" id="sample" type="button">Probar con ejemplos</button>
+        <button class="btn" id="clear" type="button">Vaciar todo</button>
       </div>
     </div>
-    <ol class="pasos" id="pasos" aria-label="Pasos">
-      <li class="paso activo" data-paso="1"><span class="n">1</span>Agrega</li>
-      <li class="paso" data-paso="2"><span class="n">2</span>Elige formato</li>
-      <li class="paso" data-paso="3"><span class="n">3</span>Descarga</li>
-    </ol>
-  </header>
 
   <div class="layout">
     <main>
       <label class="drop" id="drop" for="file">
-        <div class="hojas" aria-hidden="true">
-          <span></span><span></span>
-          <span><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
-        </div>
-        <h2>Suelta tus archivos aquí</h2>
-        <p>Imágenes, PDF, Word, Excel o texto. También búscalos en el explorador de archivos.</p>
-        <div class="fila">
-          <button type="button" class="btn pink" id="elegir">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-            Elegir archivos
-          </button>
-        </div>
-        <span class="hint">Varios a la vez con <kbd>Ctrl</kbd> + clic · o pega con <kbd>Ctrl</kbd> + <kbd>V</kbd></span>
+        <span class="drop-icono" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5"/><path d="M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>
+        </span>
+        <span class="drop-texto">
+          <strong>Suelta tus archivos aquí</strong>
+          <span>JPG, PNG, WEBP, PDF, Word, Excel, CSV, texto, Markdown o HTML. Varios a la vez, o pega con <kbd>Ctrl</kbd> + <kbd>V</kbd>.</span>
+        </span>
+        <button type="button" class="btn" id="elegir">Elegir archivos</button>
         <input id="file" type="file" multiple hidden
           accept="image/*,.pdf,.docx,.xlsx,.xls,.ods,.csv,.tsv,.txt,.md,.markdown,.html,.htm,.json,.xml,.log">
       </label>
 
       <div class="mesa-head">
-        <h2>Tus archivos <span class="count" id="count">0</span></h2>
-        <div class="acciones">
-          <button class="btn ghost" id="sample" type="button">Probar con ejemplos</button>
-          <button class="btn ghost" id="clear" type="button">Vaciar todo</button>
-        </div>
+        <h2>Orden del documento <span class="count" id="count">0</span></h2>
+        <p class="mesa-ayuda">Arrastra las tarjetas o usa sus flechas para cambiar el orden. Con teclado: <kbd>Alt</kbd> + <kbd>←</kbd> <kbd>→</kbd>.</p>
       </div>
       <div id="grid" class="grid"></div>
-      <div id="empty" class="empty">Aún no hay archivos. Se convierten en el orden en que aparecen aquí; arrastra las tarjetas o usa sus flechas ◀ ▶ para cambiarlo (con teclado: <kbd>Alt</kbd> + <kbd>←</kbd> <kbd>→</kbd>).</div>
+      <div id="empty" class="empty">
+        <p class="empty-intro">Aquí aparecen tus archivos, en el orden en que se van a convertir. Esto puedes hacer con cada tipo:</p>
+        <div class="tabla-scroll">
+          <table class="tabla-formatos">
+            <thead>
+              <tr><th scope="col">Si agregas</th><th scope="col">PDF</th><th scope="col">Word</th><th scope="col">Imagen</th><th scope="col">Texto</th><th scope="col">Excel</th></tr>
+            </thead>
+            <tbody>
+              <tr><th scope="row"><span class="tipo imagen">Imagen</span> JPG, PNG, WEBP</th><td>Una por página</td><td>Una por página</td><td>Cambia de formato</td><td class="no">—</td><td class="no">—</td></tr>
+              <tr><th scope="row"><span class="tipo pdf">PDF</span></th><td>Los une</td><td>Texto o copia exacta</td><td>Una por página</td><td>Su texto</td><td class="no">—</td></tr>
+              <tr><th scope="row"><span class="tipo word">Word</span> .docx</th><td>Sí</td><td>Los une</td><td>Una por página</td><td>Su texto</td><td>Sus tablas</td></tr>
+              <tr><th scope="row"><span class="tipo tabla">Excel</span> XLSX, CSV</th><td>Como tabla</td><td>Como tabla</td><td>Una por página</td><td>Separado por tabs</td><td>Cada hoja</td></tr>
+              <tr><th scope="row"><span class="tipo texto">Texto</span> TXT, MD, HTML</th><td>Sí</td><td>Sí</td><td>Una por página</td><td>Sí</td><td>Sus tablas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </main>
 
     <aside class="panel" aria-label="Opciones de conversión">
       <div class="panel-head">
-        <h2>¿En qué lo convierto?</h2>
+        <h2>Resultado</h2>
       </div>
       <div class="panel-body">
 
         <div class="field">
           <span class="label">Convertir a</span>
           <div class="salidas">
-            <label class="opt sal"><input type="radio" name="fmt" id="fmt-pdf" value="pdf" checked><span><i aria-hidden="true" class="ico pdf">PDF</i>PDF<small data-compat="pdf"></small></span></label>
-            <label class="opt sal"><input type="radio" name="fmt" id="fmt-doc" value="docx"><span><i aria-hidden="true" class="ico word">W</i>Word<small data-compat="docx"></small></span></label>
-            <label class="opt sal"><input type="radio" name="fmt" id="fmt-img" value="imagen"><span><i aria-hidden="true" class="ico imagen">IMG</i>Imagen<small data-compat="imagen"></small></span></label>
-            <label class="opt sal"><input type="radio" name="fmt" id="fmt-txt" value="texto"><span><i aria-hidden="true" class="ico texto">TXT</i>Texto<small data-compat="texto"></small></span></label>
-            <label class="opt sal"><input type="radio" name="fmt" id="fmt-xls" value="excel"><span><i aria-hidden="true" class="ico tabla">XLS</i>Excel<small data-compat="excel"></small></span></label>
+            <label class="opt sal"><input type="radio" name="fmt" id="fmt-pdf" value="pdf" checked><span>PDF<small data-compat="pdf"></small></span></label>
+            <label class="opt sal"><input type="radio" name="fmt" id="fmt-doc" value="docx"><span>Word<small data-compat="docx"></small></span></label>
+            <label class="opt sal"><input type="radio" name="fmt" id="fmt-img" value="imagen"><span>Imagen<small data-compat="imagen"></small></span></label>
+            <label class="opt sal"><input type="radio" name="fmt" id="fmt-txt" value="texto"><span>Texto<small data-compat="texto"></small></span></label>
+            <label class="opt sal"><input type="radio" name="fmt" id="fmt-xls" value="excel"><span>Excel<small data-compat="excel"></small></span></label>
           </div>
           <p class="aviso" id="avisoCompat" hidden></p>
         </div>
 
-        <div class="field" data-para="imagen">
+        <div class="field" data-para="imagen" hidden>
           <span class="label">Formato de imagen</span>
           <div class="seg tres">
             <label class="opt"><input type="radio" name="imgfmt" id="img-jpg" value="jpg" checked><span>JPG</span></label>
@@ -115,7 +114,7 @@
           </div>
         </div>
 
-        <div class="field" data-para="docx" data-si="pdf">
+        <div class="field" data-para="docx" data-si="pdf" hidden>
           <span class="label">PDF a Word</span>
           <div class="seg">
             <label class="opt"><input type="radio" name="pdfword" id="pw-texto" value="texto" checked><span>Texto editable</span></label>
@@ -129,7 +128,7 @@
           <div class="seg tres calidad">
             <label class="opt"><input type="radio" name="calidad" id="cal-ligera" value="ligera"><span>Ligera<small>pesa menos</small></span></label>
             <label class="opt"><input type="radio" name="calidad" id="cal-alta" value="alta" checked><span>Alta<small>recomendada</small></span></label>
-            <label class="opt ia"><input type="radio" name="calidad" id="cal-ia" value="ia"><span><b>✦ IA</b><small>más nítida</small></span></label>
+            <label class="opt ia"><input type="radio" name="calidad" id="cal-ia" value="ia"><span><b>IA ×2</b><small>más nítida</small></span></label>
           </div>
           <div class="ia-nota" id="iaNota" hidden>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
@@ -166,7 +165,7 @@
         </div>
 
         <div class="field" data-para="pdf docx texto excel">
-          <span class="label">Resultado</span>
+          <span class="label">Archivos de salida</span>
           <div class="seg">
             <label class="opt"><input type="radio" name="archivos" id="ar-unir" value="unir" checked><span>Unir en uno</span></label>
             <label class="opt"><input type="radio" name="archivos" id="ar-sep" value="separar"><span>Uno por archivo</span></label>
@@ -189,6 +188,8 @@
       </div>
     </aside>
   </div>
+
+  </div><!-- /hoja -->
 
   <footer>
     <span>Imprentita · todo se procesa en tu navegador</span>

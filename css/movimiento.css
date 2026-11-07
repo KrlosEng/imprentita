@@ -1,108 +1,21 @@
 /* =========================================================
-   Movimiento
-   - Entrada de la página: el título "se imprime" (las tintas
-     rosa y azul llegan desde lejos y caen en su registro) y
-     el resto aparece escalonado
-   - Respuesta al presionar y al pasar el mouse
-   - Pieza de confeti para celebrar la descarga
-   Todo usa solo transform y opacity. Con "reducir movimiento"
-   base.css apaga animaciones y transiciones.
+   Movimiento: solo respuesta
+   En una pantalla de trabajo nada hace una entrada: el movimiento
+   confirma lo que la persona hizo (presionar, una tarjeta que
+   llega o cambia de lugar, la palomita al terminar).
+   Todo usa transform y opacity; con "reducir movimiento" base.css
+   apaga animaciones y transiciones, y js/interfaz/movimiento.js
+   no anima nada.
    ========================================================= */
 
-/* ---------- Entrada de la página ---------- */
-@keyframes subir {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes desde-derecha {
-  from { opacity: 0; transform: translateX(18px); }
-  to { opacity: 1; transform: none; }
-}
-/* Las tintas del título llegan fuera de registro y se asientan */
-@keyframes tinta-rosa {
-  from { opacity: 0; transform: translate(26px, 14px); }
-  to { opacity: 1; transform: translate(5px, 3px); }
-}
-@keyframes tinta-azul {
-  from { opacity: 0; transform: translate(-22px, -12px); }
-  to { opacity: .9; transform: translate(-3px, -2px); }
-}
-@keyframes tinta-negra {
-  0%, 35% { opacity: 0; }
-  100% { opacity: 1; }
-}
+/* Mientras convierte, el botón no se puede volver a presionar */
+.go.convirtiendo { cursor: progress; opacity: .85; }
 
-.topbar     { animation: subir var(--dur-entrada) var(--ease-out-expo) backwards; }
-.logo .reg.p { animation: tinta-rosa 900ms var(--ease-out-expo) 120ms backwards; }
-.logo .reg.b { animation: tinta-azul 900ms var(--ease-out-expo) 120ms backwards; }
-.logo .tinta { animation: tinta-negra 700ms var(--ease-out) 120ms backwards; }
-.tagline    { animation: subir var(--dur-entrada) var(--ease-out-expo) 260ms backwards; }
-.formatos .ft { animation: subir 420ms var(--ease-out-expo) backwards; }
-.formatos .ft:nth-child(1)  { animation-delay: 340ms; }
-.formatos .ft:nth-child(2)  { animation-delay: 370ms; }
-.formatos .ft:nth-child(3)  { animation-delay: 400ms; }
-.formatos .ft:nth-child(4)  { animation-delay: 430ms; }
-.formatos .ft:nth-child(5)  { animation-delay: 460ms; }
-.formatos .ft:nth-child(6)  { animation-delay: 490ms; }
-.formatos .ft:nth-child(7)  { animation-delay: 520ms; }
-.formatos .ft:nth-child(8)  { animation-delay: 550ms; }
-.formatos .ft:nth-child(9)  { animation-delay: 580ms; }
-.formatos .ft:nth-child(10) { animation-delay: 610ms; }
-.pasos      { animation: subir var(--dur-entrada) var(--ease-out-expo) 380ms backwards; }
-.drop       { animation: subir var(--dur-entrada) var(--ease-out-expo) 440ms backwards; }
-.mesa-head, #empty { animation: subir var(--dur-entrada) var(--ease-out-expo) 540ms backwards; }
-.panel      { animation: desde-derecha 720ms var(--ease-out-expo) 320ms backwards; }
-
-/* ---------- Zona de carga ---------- */
-/* Las hojas se abren en abanico al pasar el mouse o al arrastrar archivos */
-.hojas span { transition: transform 320ms var(--ease-out); }
-.drop:hover .hojas span:nth-child(1), .drop.over .hojas span:nth-child(1) { transform: rotate(-18deg) translateX(-18px); }
-.drop:hover .hojas span:nth-child(2), .drop.over .hojas span:nth-child(2) { transform: rotate(14deg) translateX(18px); }
-.drop:hover .hojas span:nth-child(3), .drop.over .hojas span:nth-child(3) { transform: translateY(-4px); }
-/* Sin archivos todavía: las hojas flotan suave para invitar a empezar */
-@keyframes flotar {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
-}
-.drop.vacia .hojas { animation: flotar 3.2s ease-in-out 1.2s infinite; }
-.drop.vacia:hover .hojas, .drop.vacia.over .hojas { animation-play-state: paused; }
-
-/* ---------- Respuesta al presionar ---------- */
-.opt:active span { transform: scale(.96); transition-duration: 80ms; }
-.tool:active { transform: scale(.9); }
-@media (pointer: coarse) { .tool { height: 44px; } }
-.sal input:checked + span .ico { transition: transform var(--dur) var(--ease-out); }
-
-/* Botón principal listo para usarse por primera vez */
-.go:not([disabled]) { transition: transform var(--dur-rapida) var(--ease-out), box-shadow var(--dur-rapida) var(--ease-out), background-color var(--dur); }
-
-/* Mientras convierte: el botón respira y no se puede volver a presionar */
-@keyframes respirar {
-  0%, 100% { opacity: 1; }
-  50% { opacity: .72; }
-}
-.go.convirtiendo { animation: respirar 1.2s ease-in-out infinite; cursor: progress; }
-
-/* ---------- Tarjetas ---------- */
-.card.saliendo { pointer-events: none; }
-.card.dragging { transform: scale(.96) rotate(-1deg); }
-
-/* ---------- Confeti de la descarga ---------- */
-.confeti {
-  position: fixed; z-index: 30; pointer-events: none;
-  width: 10px; height: 10px; border: 1.5px solid var(--borde); border-radius: 2px;
-  left: 0; top: 0;
-}
-.confeti.circulo { border-radius: 50%; }
-.confeti.tira { width: 5px; height: 14px; }
-
-/* ---------- Avisos ---------- */
-.toast { display: flex; align-items: center; gap: 10px; }
+/* La palomita del aviso se dibuja */
 .toast .t-icono { flex: none; display: none; }
 .toast.ok .t-icono, .toast.error .t-icono { display: block; }
-.toast.ok { box-shadow: 5px 5px 0 var(--mint); }
-.toast.error { box-shadow: 5px 5px 0 var(--pink); }
-/* La palomita se dibuja */
 .toast.ok .t-icono path { stroke-dasharray: 24; stroke-dashoffset: 24; }
-.toast.ok.show .t-icono path { animation: trazar 420ms var(--ease-out) 160ms forwards; }
+.toast.ok.show .t-icono path { animation: trazar 360ms var(--ease-out) 140ms forwards; }
 @keyframes trazar { to { stroke-dashoffset: 0; } }
+
+.card.saliendo { pointer-events: none; }

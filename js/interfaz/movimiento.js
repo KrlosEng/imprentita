@@ -5,7 +5,6 @@
    - salir: una tarjeta se encoge y desvanece antes de irse
    - realzar: pequeño "golpe" de sello para confirmar un cambio
    - aparecer: un elemento que se muestra entra deslizándose
-   - celebrar: confeti de tintas al terminar la descarga
    Con "reducir movimiento" ninguna de estas se ejecuta.
    ========================================================= */
 (() => {
@@ -47,12 +46,12 @@
     return Promise.race([anim.finished.catch(() => {}), new Promise((r) => setTimeout(r, 220))]);
   }
 
-  // ---------- Golpe de sello ----------
-  function realzar(el, escala = 1.18) {
+  // ---------- Confirmar un cambio: un pulso breve ----------
+  function realzar(el, escala = 1.12) {
     if (!el || reducido()) return;
     el.animate(
-      [{ transform: 'none' }, { transform: `scale(${escala}) rotate(-6deg)`, offset: 0.4 }, { transform: 'none' }],
-      { duration: 280, easing: EASE },
+      [{ transform: 'none' }, { transform: `scale(${escala})`, offset: 0.4 }, { transform: 'none' }],
+      { duration: 220, easing: EASE },
     );
   }
 
@@ -65,15 +64,6 @@
     );
   }
 
-  // ---------- Invitar a usar el botón principal ----------
-  function invitar(el) {
-    if (!el || reducido()) return;
-    el.animate(
-      [{ transform: 'none' }, { transform: 'translate(-2px, -2px)', boxShadow: '7px 7px 0 var(--shadow)', offset: 0.5 }, { transform: 'none' }],
-      { duration: 520, easing: EASE, iterations: 2 },
-    );
-  }
-
   // ---------- Sacudida de error ----------
   function sacudir(el, base = '') {
     if (!el || reducido()) return;
@@ -83,33 +73,5 @@
     );
   }
 
-  // ---------- Confeti de tintas ----------
-  const COLORES = ['var(--pink)', 'var(--blue)', 'var(--yellow)', 'var(--mint)'];
-  const FORMAS = ['', 'circulo', 'tira'];
-  function celebrar(desde) {
-    if (!desde || reducido()) return;
-    const r = desde.getBoundingClientRect();
-    const x0 = r.left + r.width / 2, y0 = r.top + r.height / 2;
-    for (let i = 0; i < 28; i++) {
-      const p = document.createElement('span');
-      p.className = 'confeti ' + FORMAS[i % FORMAS.length];
-      p.style.background = COLORES[i % COLORES.length];
-      document.body.appendChild(p);
-      // Sale hacia arriba en abanico y cae con un giro
-      const ang = (-90 + (Math.random() - 0.5) * 150) * (Math.PI / 180);
-      const fuerza = 140 + Math.random() * 160;
-      const dx = Math.cos(ang) * fuerza;
-      const dy = Math.sin(ang) * fuerza;
-      const giro = (Math.random() - 0.5) * 720;
-      const anim = p.animate([
-        { transform: `translate(${x0}px, ${y0}px) rotate(0deg) scale(.6)`, opacity: 1 },
-        { transform: `translate(${x0 + dx * 0.8}px, ${y0 + dy}px) rotate(${giro * 0.6}deg) scale(1)`, opacity: 1, offset: 0.45 },
-        { transform: `translate(${x0 + dx}px, ${y0 + dy + 220}px) rotate(${giro}deg) scale(.9)`, opacity: 0 },
-      ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(.2, .6, .35, 1)', fill: 'forwards' });
-      anim.finished.catch(() => {}).then(() => p.remove());
-      setTimeout(() => p.remove(), 2000); // por si la pestaña quedó en segundo plano
-    }
-  }
-
-  App.mov = { reducido, flip, salir, realzar, aparecer, invitar, sacudir, celebrar };
+  App.mov = { reducido, flip, salir, realzar, aparecer, sacudir };
 })();

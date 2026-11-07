@@ -51,10 +51,10 @@
     const r = it.resumen;
     if (r.tabla) {
       const filas = r.tabla.map((f) => `<tr>${f.map((c) => `<td>${escapar(c)}</td>`).join('')}</tr>`).join('');
-      return `<div class="papel ${it.kind}"><span class="t">${escapar(App.sinExtension(it.name))}</span><table class="mini-tabla">${filas}</table></div>`;
+      return `<div class="papel ${it.kind}" aria-hidden="true"><span class="t">${escapar(App.sinExtension(it.name))}</span><table class="mini-tabla">${filas}</table></div>`;
     }
     const lineas = r.lineas.map((l) => `<span class="l">${escapar(l)}</span>`).join('');
-    return `<div class="papel ${it.kind}"><span class="t">${escapar(r.titulo || App.sinExtension(it.name))}</span>${lineas}</div>`;
+    return `<div class="papel ${it.kind}" aria-hidden="true"><span class="t">${escapar(r.titulo || App.sinExtension(it.name))}</span>${lineas}</div>`;
   }
 
   function info(it, usarIA) {
@@ -88,7 +88,7 @@
       card.dataset.id = it.id;
       card.innerHTML = `
         <div class="thumb" data-motivo="${fuera ? MOTIVO[o.fmt] : ''}">
-          <span class="num">${String(i + 1).padStart(2, '0')}</span>
+          <span class="num" title="Posición en el documento">${i + 1}</span>
           ${ia.badge}
           ${miniatura(it, o.ia)}
           ${ia.capa}

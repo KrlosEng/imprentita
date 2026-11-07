@@ -74,7 +74,6 @@
       state.descargado = true;
       const cuantos = r.cuantos ? ` con ${r.cuantos} archivos` : '';
       App.toast(`Listo: ${r.nombre}${cuantos} (${mb(r.tamano)})${omitidos ? ` · se ${omitidos === 1 ? 'omitió 1 archivo' : `omitieron ${omitidos} archivos`}` : ''}`, 5000, 'ok');
-      App.mov.celebrar(go);
       mostrarAvisos(o.avisos);
     } catch (err) {
       console.error(err);

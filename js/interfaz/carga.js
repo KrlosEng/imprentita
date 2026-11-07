@@ -77,7 +77,7 @@
     g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
     g.font = '800 86px "Bricolage Grotesque", sans-serif';
     g.fillText('Póster', 300, 400);
-    g.font = '600 22px "JetBrains Mono", monospace';
+    g.font = '600 22px "Schibsted Grotesk", sans-serif';
     g.fillText('600 × 800 px', 300, 475);
     const blob = await new Promise((r) => c.toBlob(r, 'image/png'));
     return new File([blob], 'poster-feria.png', { type: 'image/png' });

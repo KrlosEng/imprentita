@@ -1,12 +1,12 @@
 /* =========================================================
    Panel de opciones: muestra solo lo que aplica al formato
-   elegido, resumen, pasos y aviso de la IA
+   elegido, el resumen, la línea de estado bajo el título y el
+   aviso de la IA
    ========================================================= */
 (() => {
   const { $, state } = App;
   const EXT_IMG = { jpg: '.jpg', png: '.png', webp: '.webp' };
   let iniciado = false; // no animar lo que ya está en pantalla al abrir la página
-  let pasoAnterior = 1;
 
   // Muestra u oculta un elemento; si aparece, entra deslizándose
   function mostrar(el, ver) {
@@ -15,18 +15,23 @@
     if (iniciado && estabaOculto && ver) App.mov.aparecer(el);
   }
 
-  function actualizarPasos() {
-    const actual = state.descargado ? 3 : state.items.length ? 2 : 1;
-    if (iniciado && actual !== pasoAnterior) {
-      // el paso nuevo se marca como un sello
-      requestAnimationFrame(() => App.mov.realzar(document.querySelector(`.paso[data-paso="${actual}"] .n`), 1.35));
+  // La línea bajo el título: qué se va a descargar, en una frase
+  function actualizarEstado(o, n) {
+    const el = $('#estado');
+    const total = state.items.length;
+    if (!total) {
+      el.textContent = 'Agrega imágenes, PDF, Word, Excel o texto y elige en qué convertirlos.';
+      return;
     }
-    pasoAnterior = actual;
-    document.querySelectorAll('.paso').forEach((li) => {
-      const n = Number(li.dataset.paso);
-      li.classList.toggle('activo', n === actual);
-      li.classList.toggle('hecho', n < actual || (n === 3 && state.descargado));
-    });
+    const nombre = App.SALIDAS[o.fmt].nombre;
+    const fuera = total - n;
+    const partes = [];
+    if (state.descargado) partes.push('Descargado.');
+    partes.push(n
+      ? `${n} de ${total} ${total === 1 ? 'archivo' : 'archivos'} ${o.archivos === 'unir' && n > 1 && o.fmt !== 'imagen' ? 'se unen en un' : 'se convierten a'} ${nombre}.`
+      : `Ninguno de tus ${total} archivos se puede pasar a ${nombre}.`);
+    if (fuera && n) partes.push(`${fuera} se ${fuera === 1 ? 'omite' : 'omiten'}.`);
+    el.textContent = partes.join(' ');
   }
 
   // Muestra solo las opciones del formato elegido
@@ -88,10 +93,7 @@
     $('#ext').textContent = extension(o);
     if (!state.convirtiendo) {
       go.textContent = `Convertir a ${nombre}`;
-      const estabaApagado = go.disabled;
       go.disabled = n === 0;
-      // la primera vez que se puede convertir, el botón se asoma para que lo veas
-      if (iniciado && estabaApagado && !go.disabled) App.mov.invitar(go);
     }
     go.className = 'btn go ' + (o.fmt === 'docx' ? 'doc' : 'pdf');
     $('#sumPages').textContent = `${n} ${n === 1 ? 'archivo' : 'archivos'}`;
@@ -101,7 +103,7 @@
     actualizarCampos(o);
     actualizarCompat(o);
     actualizarNotaIA(o);
-    actualizarPasos();
+    actualizarEstado(o, n);
   }
 
   // Al cambiar cualquier opción
