@@ -11,7 +11,7 @@
     if (!lista.length) return;
     if (lista.length > 1 || !lista[0].type.startsWith('image/')) App.toast(`Abriendo ${lista.length} ${lista.length === 1 ? 'archivo' : 'archivos'}…`, 10000);
     let added = 0;
-    const errores = { tipo: [], lectura: [], red: [] };
+    const errores = { tipo: [], lectura: [], red: [], seguridad: [] };
     for (const f of lista) {
       const it = await App.entradas.abrirArchivo(f);
       if (it.error) { errores[it.error].push(it.name); continue; }
@@ -21,7 +21,8 @@
     }
     if (App.opts().ia) App.ia.mejorarTodas();
 
-    if (errores.red.length) App.toast('No se pudo descargar el lector de ese formato. La primera vez se necesita internet.', 6000, 'error');
+    if (errores.seguridad.length) App.toast('No se pudo comprobar que la herramienta para leer ese formato sea segura, así que no se usó. Abre la app desde https://imprentita.vercel.app o con doble clic en index.html.', 8000, 'error');
+    else if (errores.red.length) App.toast('No se pudo descargar el lector de ese formato. La primera vez se necesita internet.', 6000, 'error');
     else if (errores.tipo.length) {
       const doc = errores.tipo.some((n) => /\.(doc|ppt|pptx)$/i.test(n));
       App.toast(doc

@@ -18,12 +18,18 @@
     return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
   }
 
-  async function textoDe(it) {
+  async function textoDe(it, o) {
     if (it.kind === 'pdf') {
       const pdf = await App.leerPdf.abrir(it.bytes);
       try {
         const paginas = await App.leerPdf.texto(pdf);
-        return paginas.map((p) => p.join('\n\n')).join('\n\n\f\n\n').trim(); // \f = salto de página
+        if (!paginas.some((p) => p.length)) {
+          // sin texto: casi siempre es un PDF escaneado (fotos de páginas)
+          o.avisos?.push(`${it.name} no tiene texto: parece escaneado. Para sacar el texto de una imagen haría falta reconocimiento de texto (OCR).`);
+          return '(Este PDF no tiene texto que se pueda sacar: parece escaneado.)';
+        }
+        // separador de páginas legible en cualquier editor (antes era el carácter \f)
+        return paginas.map((p, i) => (i ? `\n\n— Página ${i + 1} —\n\n` : '') + p.join('\n\n')).join('').trim();
       } finally {
         pdf.destroy();
       }
@@ -38,7 +44,7 @@
     const textos = [];
     for (const [i, it] of items.entries()) {
       paso(i / items.length, `Leyendo ${it.name}`);
-      textos.push({ it, texto: await textoDe(it) });
+      textos.push({ it, texto: await textoDe(it, o) });
     }
     if (o.archivos === 'unir') {
       const todo = textos.length === 1

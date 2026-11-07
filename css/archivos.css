@@ -76,3 +76,7 @@
 }
 .card.fuera:hover { opacity: .8; }
 .tools .tool.solo { flex: 0 0 auto; width: 100%; }
+
+/* Avisos del resultado, bajo el botón Convertir */
+.aviso.resultado strong { display: block; margin-bottom: var(--space-xs); }
+.aviso.resultado ul { margin: 0; padding-left: 1.1em; display: grid; gap: var(--space-xs); }

@@ -123,6 +123,7 @@
           });
           // Si no hay texto (PDF escaneado), mejor como imagen
           if (paginas.some((p) => p.length)) return [seccionDoc(bloques, o)];
+          o.avisos?.push(`${it.name} no tiene texto (parece escaneado): se pasó como copia exacta, con cada página como imagen.`);
         }
         // Copia exacta: cada página como imagen, del tamaño original
         const out = [];

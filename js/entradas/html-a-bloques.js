@@ -118,10 +118,23 @@
     return bloques;
   }
 
+  // Solo imágenes que ya vienen dentro del archivo (data:/blob:). Una imagen
+  // con dirección de internet no se descarga: la app promete que nada sale
+  // de tu computadora, y abrir el archivo no debe avisar a ningún servidor
+  const esLocal = (src) => /^(data|blob):/i.test(src);
+  const dominio = (src) => { try { return new URL(src).hostname; } catch { return 'otro sitio'; } };
+
   // Pasa todas las imágenes a PNG/JPEG y guarda su tamaño
   async function prepararImagenes(bloques) {
     for (const b of bloques) {
       if (b.t !== 'img') continue;
+      if (!esLocal(b.src)) {
+        b.t = 'p';
+        b.runs = [{ text: `[Imagen de ${dominio(b.src)} no incluida: no se descargan imágenes de internet]`, i: true }];
+        b.externa = true;
+        delete b.src;
+        continue;
+      }
       try {
         const img = await App.loadImage(b.src);
         b.w = img.naturalWidth || 600;

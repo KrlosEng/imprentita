@@ -13,7 +13,7 @@ Tus archivos nunca se suben a ningún servidor: todo se procesa en tu computador
 - **Convertir entre formatos:** PDF, Word (.docx), imagen (JPG, PNG, WEBP), texto (.txt) y Excel (.xlsx).
 - **Unir varios archivos en uno:** por ejemplo, una foto, un PDF y un Word en un solo PDF.
 - **Uno por archivo:** si prefieres, cada archivo sale por separado dentro de un `.zip`.
-- **Ordenar, girar y quitar** archivos antes de convertir (arrastra las tarjetas para cambiar el orden).
+- **Ordenar, girar y quitar** archivos antes de convertir: arrastra las tarjetas, usa sus flechas ◀ ▶ (también en el celular) o, con teclado, `Alt` + `←` `→`.
 - **PDF a Word** como *texto editable* o como *copia exacta* (cada página como imagen).
 - **Mejora con IA:** amplía tus fotos al doble de resolución con un modelo ESRGAN que corre en tu navegador.
 - **PDF con texto real**, que se puede seleccionar y buscar.
@@ -123,3 +123,13 @@ vercel deploy --prod
 ## 🔒 Privacidad
 
 Las conversiones y la mejora con IA ocurren dentro de tu navegador. Ningún archivo se envía a un servidor.
+
+- **Integridad de las librerías:** cada librería que se descarga de una CDN lleva su hash SHA-384 (SRI). Si la CDN sirviera otro contenido, no se ejecuta. Los hashes están en `js/librerias.js`.
+- **Sin imágenes de internet:** si un HTML o Markdown trae imágenes con dirección web, no se descargan; en su lugar queda una nota.
+- **Versiones con parches de seguridad:** SheetJS 0.20.3 (desde `cdn.sheetjs.com`) y pdf.js 4.10 con `isEvalSupported: false`.
+
+## ⚠️ Límites conocidos
+
+- Los textos en alfabetos que las fuentes básicas de PDF no tienen (chino, árabe, griego, emojis…) se ponen en el PDF como imagen: se ven bien, pero no se pueden seleccionar. La app lo avisa.
+- Un PDF escaneado no tiene texto: al pasarlo a Texto sale vacío (avisa) y a Word se pasa como copia exacta.
+- Un PDF protegido se une copiando sus páginas como imagen, para que no salgan en blanco.

@@ -132,7 +132,8 @@
     } catch (err) {
       console.error(err);
       if (it.src) URL.revokeObjectURL(it.src);
-      return { error: /descargar/.test(err.message) ? 'red' : 'lectura', name: f.name };
+      const tipo = /Integridad|insegura/.test(err.message) ? 'seguridad' : /descargar/.test(err.message) ? 'red' : 'lectura';
+      return { error: tipo, name: f.name };
     }
   }
 

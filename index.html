@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link rel="dns-prefetch" href="https://unpkg.com">
+<link rel="dns-prefetch" href="https://cdn.sheetjs.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap">
 
 <!-- Estilos -->
@@ -84,7 +85,7 @@
         </div>
       </div>
       <div id="grid" class="grid"></div>
-      <div id="empty" class="empty">Aún no hay archivos. Se convierten en el orden en que aparecen aquí; arrastra las tarjetas para cambiarlo (con teclado: <kbd>Alt</kbd> + <kbd>←</kbd> <kbd>→</kbd> sobre una tarjeta).</div>
+      <div id="empty" class="empty">Aún no hay archivos. Se convierten en el orden en que aparecen aquí; arrastra las tarjetas o usa sus flechas ◀ ▶ para cambiarlo (con teclado: <kbd>Alt</kbd> + <kbd>←</kbd> <kbd>→</kbd>).</div>
     </main>
 
     <aside class="panel" aria-label="Opciones de conversión">
@@ -184,6 +185,7 @@
           <div class="barra" id="barra" role="progressbar" aria-label="Avance de la conversión" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="bar"></div></div>
         </div>
         <button class="btn go pdf" id="go" type="button" disabled>Convertir a PDF</button>
+        <div class="aviso resultado" id="avisoResultado" role="status" hidden></div>
       </div>
     </aside>
   </div>

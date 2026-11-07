@@ -6,11 +6,8 @@
    que se elige la calidad "IA".
    ========================================================= */
 (() => {
-  const LIBS = [
-    'https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js',
-    'https://cdn.jsdelivr.net/npm/upscaler@1.0.0/dist/browser/umd/upscaler.min.js',
-    'https://cdn.jsdelivr.net/npm/@upscalerjs/esrgan-slim@1.0.0/dist/umd/models/esrgan-slim/src/x2/index.min.js',
-  ];
+  // Las librerías de IA (TensorFlow.js + UpscalerJS) están en librerias.js, con su hash de integridad
+
   // Imágenes con el lado mayor por encima de esto ya tienen buena
   // resolución; mejorarlas sería muy lento y casi no se notaría.
   const LIMITE_PX = 1200;
@@ -18,17 +15,12 @@
   let cargando = null;
   let upscaler = null;
   let cola = Promise.resolve();
-
-  const cargarScript = (src) => new Promise((res, rej) => {
-    const s = document.createElement('script');
-    s.src = src; s.onload = res; s.onerror = () => rej(new Error('No se pudo cargar ' + src));
-    document.head.appendChild(s);
-  });
+  let avisoDado = false; // un solo aviso por tanda de fallos, no uno por imagen
 
   function cargarModelo() {
     if (!cargando) {
       cargando = (async () => {
-        for (const src of LIBS) await cargarScript(src);
+        await App.libs.cargar('ia');
         upscaler = new window.Upscaler({ model: window.ESRGANSlim2x });
       })();
       cargando.catch(() => { cargando = null; }); // permite reintentar
@@ -50,16 +42,22 @@
       });
       const img = await App.loadImage(out);
       Object.assign(it.ia, { estado: 'listo', img, src: out, w: img.naturalWidth, h: img.naturalHeight, progreso: 1 });
+      avisoDado = false;
     } catch (err) {
       console.error(err);
       it.ia = { estado: 'error' };
-      App.toast('No se pudo usar la IA. La primera vez necesita internet para descargar el modelo.', 5000);
+      if (!avisoDado) {
+        avisoDado = true;
+        App.toast('No se pudo usar la IA, así que esas imágenes se quedan como están. La primera vez necesita internet para descargar el modelo.', 6000, 'error');
+      }
     }
     App.emit('ia', it);
   }
 
-  function encolar(it) {
-    if (it.ia && it.ia.estado !== 'error') return; // ya está lista o en camino
+  // Un fallo no se reintenta solo al cambiar opciones (repetiría el aviso):
+  // se reintenta cuando la persona presiona Convertir
+  function encolar(it, reintentar) {
+    if (it.ia && (it.ia.estado !== 'error' || !reintentar)) return; // lista, en camino o ya falló
     if (Math.max(it.w, it.h) > LIMITE_PX) {
       it.ia = { estado: 'hd' };
       App.emit('ia', it);
@@ -73,7 +71,9 @@
   App.ia = {
     LIMITE_PX,
     // solo las fotos e imágenes; los documentos no pasan por la IA
-    mejorarTodas: () => App.state.items.filter((it) => it.kind === 'imagen').forEach(encolar),
+    mejorarTodas: ({ reintentar = false } = {}) => App.state.items
+      .filter((it) => it.kind === 'imagen')
+      .forEach((it) => encolar(it, reintentar)),
     esperar: () => cola,
     contar() {
       const conIA = App.state.items.filter((it) => it.kind === 'imagen' && it.ia && it.ia.estado !== 'hd');
@@ -81,6 +81,7 @@
         total: conIA.length,
         listas: conIA.filter((it) => it.ia.estado === 'listo').length,
         faltan: conIA.filter((it) => ['pendiente', 'procesando'].includes(it.ia.estado)).length,
+        fallidas: conIA.filter((it) => it.ia.estado === 'error').length,
       };
     },
   };

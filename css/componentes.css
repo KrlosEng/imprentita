@@ -95,7 +95,8 @@
   position: absolute; top: 8px; right: 8px; font: 700 11px var(--mono); letter-spacing: .04em;
   color: var(--on-blue); background: var(--blue); border: 2px solid var(--borde); border-radius: 8px; padding: 1px 7px;
 }
-.ia-badge.hd { background: var(--ink-fixed); }
+.ia-badge.hd { background: var(--ink-fixed); color: var(--hoja); }
+.ia-badge.sin { background: var(--pink); color: var(--on-accent); }
 
 /* Estado: mejorando con IA */
 .card.procesando .thumb img { filter: blur(2px) saturate(.6); }
@@ -207,7 +208,7 @@ select:focus, input[type="text"]:focus { border-color: var(--ink); outline: none
   position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 160%);
   background: var(--ink); color: var(--paper); padding: 14px 20px; border-radius: 14px; font-weight: 600;
   box-shadow: 5px 5px 0 var(--yellow); transition: transform 220ms var(--ease-out); z-index: 20;
-  max-width: calc(100% - 32px);
+  width: max-content; max-width: min(560px, calc(100vw - 32px)); /* left:50% limitaba el ancho a media pantalla */
 }
 .toast.show { transform: translate(-50%, 0); transition-duration: 320ms; transition-timing-function: var(--ease-out-expo); }
 
@@ -215,4 +216,25 @@ select:focus, input[type="text"]:focus { border-color: var(--ink); outline: none
 @media (max-width: 480px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
   .tools { padding: 8px 8px 10px; gap: 4px; }
+}
+
+/* Flechas para mover la tarjeta: en pantallas táctiles arrastrar no funciona,
+   así que ahí se ven siempre; con mouse aparecen al pasar por encima o con el teclado */
+.mover {
+  position: absolute; top: 50%; z-index: 3;
+  width: 36px; height: 36px; display: grid; place-items: center; cursor: pointer;
+  border: 2px solid var(--borde); border-radius: 50%; background: var(--card); color: var(--ink);
+  box-shadow: 2px 2px 0 var(--shadow);
+  opacity: 0; transform: translateY(-50%) scale(.9);
+  pointer-events: none; /* invisibles no se pueden pulsar: evita mover una tarjeta sin querer */
+  transition: opacity var(--dur) var(--ease-out), transform var(--dur) var(--ease-out), background-color var(--dur-rapida);
+}
+.mover.antes { left: var(--space-sm); }
+.mover.despues { right: var(--space-sm); }
+.card:hover .mover, .card:focus-within .mover { opacity: 1; transform: translateY(-50%); pointer-events: auto; }
+.mover:hover { background: var(--yellow); color: var(--ink-fixed); }
+.mover:active { transform: translateY(-50%) scale(.9); }
+.mover[disabled] { visibility: hidden; }
+@media (pointer: coarse) {
+  .mover { width: 44px; height: 44px; opacity: .92; transform: translateY(-50%); pointer-events: auto; }
 }

@@ -10,6 +10,8 @@
   const ICONS = {
     left: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>',
     right: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>',
+    antes: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+    despues: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
     del: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
   };
 
@@ -22,6 +24,7 @@
     const ia = it.ia;
     if (!usarIA || !ia || it.kind !== 'imagen') return { badge: '', capa: '', clase: '' };
     if (ia.estado === 'listo') return { badge: '<span class="ia-badge">IA ×2</span>', capa: '', clase: '' };
+    if (ia.estado === 'error') return { badge: '<span class="ia-badge sin" title="La IA no pudo mejorar esta imagen; se usa la original">Sin IA</span>', capa: '', clase: '' };
     if (ia.estado === 'hd') return { badge: '<span class="ia-badge hd" title="Ya tiene buena resolución">HD</span>', capa: '', clase: '' };
     if (ia.estado === 'pendiente' || ia.estado === 'procesando') {
       const texto = ia.estado === 'pendiente' ? 'En espera…' : 'Mejorando con IA…';
@@ -89,6 +92,8 @@
           ${ia.badge}
           ${miniatura(it, o.ia)}
           ${ia.capa}
+          <button class="mover antes" data-act="antes" type="button" title="Mover antes" aria-label="Mover ${App.escapar(it.name)} antes" ${i === 0 ? 'disabled' : ''}>${ICONS.antes}</button>
+          <button class="mover despues" data-act="despues" type="button" title="Mover después" aria-label="Mover ${App.escapar(it.name)} después" ${i === state.items.length - 1 ? 'disabled' : ''}>${ICONS.despues}</button>
         </div>
         <div class="meta">
           <div class="name"></div>
@@ -123,6 +128,8 @@
 
   // Girar (sin redibujar, para que la miniatura gire suave) y quitar
   grid.addEventListener('click', async (e) => {
+    const mov = e.target.closest('.mover');
+    if (mov) { mover(mov.closest('.card'), mov.dataset.act === 'antes' ? -1 : 1, mov.dataset.act); return; }
     const btn = e.target.closest('.tool');
     if (!btn) return;
     const card = btn.closest('.card');
@@ -166,22 +173,27 @@
     }
   });
 
+  // Mueve una tarjeta un lugar y deja el foco en el mismo botón de esa tarjeta
+  function mover(card, delta, act) {
+    const from = state.items.findIndex((x) => x.id === Number(card.dataset.id));
+    const to = from + delta;
+    if (from < 0 || to < 0 || to >= state.items.length) return;
+    const [moved] = state.items.splice(from, 1);
+    state.items.splice(to, 0, moved);
+    render();
+    let nueva = grid.querySelector(`.card[data-id="${moved.id}"] [data-act="${act}"]`);
+    if (nueva && nueva.disabled) nueva = grid.querySelector(`.card[data-id="${moved.id}"] .mover:not([disabled])`);
+    if (nueva) nueva.focus();
+    App.toast(`${moved.name} ahora es el número ${to + 1}`, 1800);
+  }
+
   // Reordenar con teclado: Alt + flecha sobre cualquier botón de la tarjeta
   grid.addEventListener('keydown', (e) => {
     if (!e.altKey || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) return;
     const card = e.target.closest('.card');
     if (!card) return;
     e.preventDefault();
-    const from = state.items.findIndex((x) => x.id === Number(card.dataset.id));
-    const to = from + (e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1);
-    if (to < 0 || to >= state.items.length) return;
-    const act = e.target.dataset.act;
-    const [moved] = state.items.splice(from, 1);
-    state.items.splice(to, 0, moved);
-    render();
-    const nueva = grid.querySelector(`.card[data-id="${moved.id}"] [data-act="${act}"]`);
-    if (nueva) nueva.focus();
-    App.toast(`${moved.name} ahora es el número ${to + 1}`, 1800);
+    mover(card, e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 1, e.target.dataset.act);
   });
 
   // Reordenar arrastrando
